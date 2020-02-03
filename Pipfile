@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 ipykernel = "*"
+flake8 = "*"
 
 [packages]
 pandas = "*"
