@@ -1,1 +1,1 @@
-web: gunicorn -w 4 src:APP -t 1200
+web: gunicorn src:APP -t 1200
