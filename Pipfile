@@ -5,17 +5,10 @@ verify_ssl = true
 
 [dev-packages]
 ipykernel = "*"
-flake8 = "*"
 
 [packages]
 pandas = "*"
 numpy = "*"
-python-dotenv = "*"
-spotipy = "*"
-flask = "*"
-flask-sqlalchemy = "*"
-gunicorn = "*"
-psycopg2 = "*"
 
 [requires]
 python_version = "3.7"
