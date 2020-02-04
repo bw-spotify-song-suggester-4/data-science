@@ -1,4 +1,5 @@
 """Main application and routing logic for Spotify Song Suggester."""
+import json
 from os import getenv
 from flask import Flask, request
 from .models import DB
@@ -30,14 +31,24 @@ def create_app():
         """Base view of the app."""
         return 'Spotify Song Suggester Data Science Backend'
 
-    @app.route('/track_info')
+    @app.route('/track-info')
     def track_info():
         token = credentials.get_access_token()
         spotify = Spotify(auth=token)
-        track_id = request.args.get('track',
+        track_id = request.args.get('track_id',
                                     default='4uLU6hMCjMI75M1A2tKUQC',
                                     type=str)
         results = spotify.track(track_id)
-        return results
+        return json.dumps(results)
+
+    @app.route('/audio-features')
+    def audio_features():
+        token = credentials.get_access_token()
+        spotify = Spotify(auth=token)
+        track_id = request.args.get('track_id',
+                                    default='4uLU6hMCjMI75M1A2tKUQC',
+                                    type=str)
+        results = spotify.audio_features(track_id)
+        return json.dumps(results)
 
     return app
