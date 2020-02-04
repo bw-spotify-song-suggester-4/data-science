@@ -20,12 +20,10 @@ def create_app():
 
     # Add config for database
     app.config['SQLALCHEMY_DATABASE_URI'] = getenv('DATABASE_URL')
+    DB.init_app(app)
 
     # Stop tracking modifications on SQLAlchemy config
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    # Let the database know about the app
-    DB.init_app(app)
 
     @app.route('/')
     def root():
