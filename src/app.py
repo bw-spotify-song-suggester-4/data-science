@@ -13,12 +13,7 @@ def create_app():
     app = Flask(__name__)
 
     # Add config for database
-    pg_user = getenv('POSTGRES_USER')
-    pg_pw = getenv('POSTGRES_PASSWORD')
-    pg_url = getenv('POSTGRES_URL')
-    pg_db = getenv('POSTGRES_DB')
-    DATABASE_URL = f'postgresql+psycopg2://{pg_user}:{pg_pw}@{pg_url}/{pg_db}'
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config['SQLALCHEMY_DATABASE_URI'] = getenv('DATABASE_URL')
 
     # Stop tracking modifications on SQLAlchemy config
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
