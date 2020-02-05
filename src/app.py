@@ -11,6 +11,12 @@ def create_app():
     app = Flask(__name__)
     DB.init_app(app)
 
+    pg_user = getenv('POSTGRES_USER')
+    pg_pw = getenv('POSTGRES_PASSWORD')
+    pg_url = getenv('POSTGRES_URL')
+    pg_db = getenv('POSTGRES_DB')
+    DATABASE_URL = f'postgresql+psycopg2://{pg_user}:{pg_pw}@{pg_url}/{pg_db}'
+
     # Spotify API authentication
     cid = getenv('SPOTIFY_CLIENT_ID')
     secret = getenv('SPOTIFY_CLIENT_SECRET')
@@ -21,7 +27,7 @@ def create_app():
     )
 
     # Add config for database
-    app.config['SQLALCHEMY_DATABASE_URI'] = getenv('DATABASE_URL')
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 
     # Stop tracking modifications on SQLAlchemy config
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
