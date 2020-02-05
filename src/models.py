@@ -3,6 +3,8 @@ import json
 import numpy as np
 DB = SQLAlchemy()
 
+DB.Model.metadata.reflect(DB.engine)
+
 
 class Track(DB.Model):
     __table__ = DB.Model.metadata.tables['track']

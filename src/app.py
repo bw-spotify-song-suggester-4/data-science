@@ -10,7 +10,6 @@ def create_app():
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
     DB.init_app(app)
-    DB.Model.metadata.reflect(DB.engine)
 
     pg_user = getenv('POSTGRES_USER')
     pg_pw = getenv('POSTGRES_PASSWORD')
