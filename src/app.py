@@ -9,6 +9,7 @@ from spotipy import oauth2, Spotify
 def create_app():
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
+    DB.init_app(app)
 
     # Spotify API authentication
     cid = getenv('SPOTIFY_CLIENT_ID')
@@ -21,7 +22,6 @@ def create_app():
 
     # Add config for database
     app.config['SQLALCHEMY_DATABASE_URI'] = getenv('DATABASE_URL')
-    DB.init_app(app)
 
     # Stop tracking modifications on SQLAlchemy config
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -39,7 +39,7 @@ def create_app():
                                     default='4uLU6hMCjMI75M1A2tKUQC',
                                     type=str)
         results = spotify.track(track_id)
-        return json.dumps(results)
+        return results
 
     @app.route('/audio-features')
     def audio_features():

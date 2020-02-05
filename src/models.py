@@ -1,12 +1,25 @@
 from flask_sqlalchemy import SQLAlchemy
 import json
+import numpy as np
 DB = SQLAlchemy()
-
-DB.Model.metadata.reflect(DB.engine)
 
 
 class Track(DB.Model):
     __table__ = DB.Model.metadata.tables['track']
+
+    def to_array(self):
+        return np.array([self.acousticness,
+                         self.danceability,
+                         self.energy,
+                         self.instrumentalness,
+                         self.key,
+                         self.liveness,
+                         self.loudness,
+                         self.mode,
+                         self.speechiness,
+                         self.tempo,
+                         self.time_signature,
+                         self.valence])
 
     def print_dict(self):
         return {
