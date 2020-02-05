@@ -30,7 +30,8 @@ def create_app():
         client_secret=secret
     )
 
-    pickle_model = pickle.load(open('./rm_04.pkl', 'rb'))
+    model = pickle.load(open('./rm_05.pkl', 'rb'))
+    scaler = pickle.load(open('./sc_05.pkl', 'rb'))
 
     @app.route('/')
     def root():
@@ -66,12 +67,12 @@ def create_app():
             'num', default=10, type=int
         )
         query1 = Track.query.filter(Track.track_id == seed_track).first()
-        _, ind = pickle_model.query(
-            query1.to_array().reshape(1, -1), k=num_tracks+1
+        _, results = model.query(
+            scaler.transform([query1.to_array()]), k=num_tracks+1
         )
-        suggested_tracks = [id.item() for id in ind[0]]
-        query2 = Track.query.filter(Track.id.in_(suggested_tracks))
-        query2 = query2.filter(Track.track_id != seed_track).all()
+        suggested_tracks = [id.item() for id in results[0]]
+        stmt = Track.query.filter(Track.id.in_(suggested_tracks))
+        query2 = stmt.filter(Track.track_id != seed_track).all()
 
         return f'{{"seed": {query1}, "results": {query2}}}'
 
