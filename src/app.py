@@ -1,21 +1,28 @@
 """Main application and routing logic for Spotify Song Suggester."""
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request
 import json
 from os import getenv
-from flask import Flask, request
-from .models import DB
 from spotipy import oauth2, Spotify
 
 
 def create_app():
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
-    DB.init_app(app)
 
+    # Add config for database
     pg_user = getenv('POSTGRES_USER')
     pg_pw = getenv('POSTGRES_PASSWORD')
     pg_url = getenv('POSTGRES_URL')
     pg_db = getenv('POSTGRES_DB')
     DATABASE_URL = f'postgresql+psycopg2://{pg_user}:{pg_pw}@{pg_url}/{pg_db}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+
+    # Stop tracking modifications on SQLAlchemy config
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    DB = SQLAlchemy(app)
+    DB.Model.metadata.reflect(DB.engine)
 
     # Spotify API authentication
     cid = getenv('SPOTIFY_CLIENT_ID')
@@ -25,12 +32,6 @@ def create_app():
         client_id=cid,
         client_secret=secret
     )
-
-    # Add config for database
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-
-    # Stop tracking modifications on SQLAlchemy config
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     @app.route('/')
     def root():

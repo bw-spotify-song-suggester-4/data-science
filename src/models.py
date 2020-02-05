@@ -1,9 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+from .app import DB
 import json
 import numpy as np
-DB = SQLAlchemy()
-
-DB.Model.metadata.reflect(DB.engine)
 
 
 class Track(DB.Model):
