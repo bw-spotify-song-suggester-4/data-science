@@ -46,7 +46,7 @@ def create_app():
             'track_id', default='06w9JimcZu16KyO3WXR459', type=str
         )
         results = spotify.track(track_id)
-        return results
+        return parse_track_info(results)
 
     @app.route('/audio-features')
     def audio_features():
@@ -108,6 +108,19 @@ def create_app():
                 info_dict['track_id'] = item['id']
                 info_dict['cover_art'] = item['album']['images'][1]['url']
                 output.append(info_dict)
+            return json.dumps(output)
+        except Exception as e:
+            return f'Error while parsing the results: {e}'
+
+    def parse_track_info(results):
+        try:
+            output = []
+            info_dict = dict()
+            info_dict['artist_name'] = results['artists'][0]['name']
+            info_dict['track_name'] = results['name']
+            info_dict['track_id'] = results['id']
+            info_dict['cover_art'] = results['album']['images'][1]['url']
+            output.append(info_dict)
             return json.dumps(output)
         except Exception as e:
             return f'Error while parsing the results: {e}'
