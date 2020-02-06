@@ -76,6 +76,42 @@ def create_app():
 
         return f'{{"seed": {query1}, "results": {query2}}}'
 
+    @app.route('/search')
+    def search():
+        default_track = 'Perfect Nelson Remix'
+        track_name = request.args.get(
+            'track_name', default=default_track, type=str
+        )
+        limit = request.args.get(
+            'limit', default=6, type=int
+        )
+        page = request.args.get(
+            'page', default=0, type=int
+        )
+        token = credentials.get_access_token()
+        spotify = Spotify(auth=token)
+        results = spotify.search(
+            q=f'track:{track_name}',
+            type='track',
+            limit=limit,
+            offset=limit*page
+        )
+        return get_search_info(results)
+
+    def get_search_info(results):
+        try:
+            output = []
+            for item in results['tracks']['items']:
+                info_dict = dict()
+                info_dict['artist_name'] = item['artists'][0]['name']
+                info_dict['track_name'] = item['name']
+                info_dict['track_id'] = item['id']
+                info_dict['cover_art'] = item['album']['images'][1]['url']
+                output.append(info_dict)
+            return json.dumps(output)
+        except Exception as e:
+            return f'Error while parsing the results: {e}'
+
     class Track(DB.Model):
         __table__ = DB.Model.metadata.tables['track']
 
@@ -97,21 +133,7 @@ def create_app():
             return {
                 'track_id': self.track_id,
                 'track_name': self.track_name,
-                'artist_name': self.artist_name,
-                'acousticness': self.acousticness,
-                'danceability': self.danceability,
-                'duration_ms': self.duration_ms,
-                'energy': self.energy,
-                'instrumentalness': self.instrumentalness,
-                'key': self.key,
-                'liveness': self.liveness,
-                'loudness': self.loudness,
-                'mode': self.mode,
-                'speechiness': self.speechiness,
-                'tempo': self.tempo,
-                'time_signature': self.time_signature,
-                'valence': self.valence,
-                'popularity': self.popularity
+                'artist_name': self.artist_name
             }
 
         def __repr__(self):
