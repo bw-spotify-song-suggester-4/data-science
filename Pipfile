@@ -17,6 +17,7 @@ flask-sqlalchemy = "*"
 gunicorn = "*"
 psycopg2 = "*"
 sklearn = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.7"
